@@ -48,13 +48,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   addemployee() {
-    this.dialog.open(AddEmployeeComponent, {
-      width: '50%',
-      exitAnimationDuration: '1000ms',
-      enterAnimationDuration: '1000ms'
-    }).afterClosed().subscribe(o => {
-      this.GetallEmployee();
-    })
+    this.openPopup(0);
   }
 
   // method delete 
@@ -65,6 +59,26 @@ export class EmployeeComponent implements OnInit {
       })
       this.subscription.add(sub);
     }
+  }
+
+  // Method untuk mengedit data karyawan berdasarkan ID karyawan
+  EditEmployee(empId: number) {
+    // Memanggil method openPopup dengan parameter empId
+    this.openPopup(empId);
+  }
+
+  // Method untuk membuka popup (dialog) dengan data karyawan yang dipilih
+  openPopup(empId: number) {
+    // Membuka dialog Angular Material dan menampilkan komponen AddEmployeeComponent
+    this.dialog.open(AddEmployeeComponent, {
+      width: '50%', // Menentukan lebar popup 50% dari layar
+      exitAnimationDuration: '1000ms', // Durasi animasi saat popup ditutup
+      enterAnimationDuration: '1000ms', // Durasi animasi saat popup dibuka
+      data: { 'code': empId } // Mengirim data empId ke komponen AddEmployeeComponent
+    }).afterClosed().subscribe(o => {
+      // Setelah dialog ditutup, panggil method GetallEmployee untuk merefresh data
+      this.GetallEmployee();
+    });
   }
 
 
