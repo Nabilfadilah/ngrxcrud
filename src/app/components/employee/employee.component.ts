@@ -35,7 +35,9 @@ export class EmployeeComponent implements OnInit {
     this.GetallEmployee();
   }
 
-
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   GetallEmployee() {
     let sub = this.service.GetAll().subscribe(item => {
@@ -53,6 +55,17 @@ export class EmployeeComponent implements OnInit {
     }).afterClosed().subscribe(o => {
       this.GetallEmployee();
     })
-
   }
+
+  // method delete 
+  DeleteEmployee(empId: number) {
+    if (confirm('Are you sure?')) {
+      let sub = this.service.Delete(empId).subscribe(item => {
+        this.GetallEmployee();
+      })
+      this.subscription.add(sub);
+    }
+  }
+
+
 }
