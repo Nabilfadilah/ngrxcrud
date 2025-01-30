@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Employee } from '../../model/Employee';
 import { EmployeeService } from '../../service/employee.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-employee',
@@ -29,7 +30,9 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class AddEmployeeComponent {
 
-  constructor(private service: EmployeeService, private ref: MatDialogRef<AddEmployeeComponent>) {
+  constructor(private service: EmployeeService, private ref: MatDialogRef<AddEmployeeComponent>,
+    private toastr: ToastrService
+  ) {
 
   }
 
@@ -52,7 +55,8 @@ export class AddEmployeeComponent {
         salary: this.empForm.value.salary as number
       }
       this.service.Create(_data).subscribe(item => {
-        alert('saved NGAB...');
+        // alert('saved NGAB...');
+        this.toastr.success('Saved successfully', 'Created')
         this.closePopup();
       });
     }
