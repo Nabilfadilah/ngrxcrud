@@ -1,0 +1,25 @@
+{
+  "employee": [
+    {
+      "id": "1",
+      "name": "Nabil Fadilah",
+      "doj": "2025-01-30T07:20:47.843Z",
+      "role": "operator",
+      "salary": "9100000"
+    },
+    {
+      "id": "3",
+      "name": "Jajang Sukmara",
+      "doj": "2024-12-31T17:00:00.000Z",
+      "role": "manager",
+      "salary": "16000000"
+    },
+    {
+      "id": "4",
+      "name": "Abdul Rahman Harnudin ",
+      "doj": "2025-01-01T17:00:00.000Z",
+      "role": "lead",
+      "salary": "8500000"
+    }
+  ]
+}
