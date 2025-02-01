@@ -8,6 +8,9 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { EmployeeService } from '../../service/employee.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { loadEmployee } from '../../store/EmployeeAction';
+import { getEmpList } from '../../store/EmployeeSelector';
 
 @Component({
   selector: 'app-employee',
@@ -27,7 +30,13 @@ export class EmployeeComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'role', 'doj', 'salary', 'action']
   subscription = new Subscription();
 
-  constructor(private dialog: MatDialog, private service: EmployeeService) {
+  // constructor(private dialog: MatDialog, private service: EmployeeService) {
+
+  // }
+
+  constructor(private dialog: MatDialog, private service: EmployeeService,
+    private store: Store
+  ) {
 
   }
 
@@ -40,11 +49,18 @@ export class EmployeeComponent implements OnInit {
   }
 
   GetallEmployee() {
-    let sub = this.service.GetAll().subscribe(item => {
+    // let sub = this.service.GetAll().subscribe(item => {
+    //   this.empList = item;
+    //   this.dataSource = new MatTableDataSource(this.empList);
+    // })
+    // this.subscription.add(sub);
+
+    // hanti ama reducer
+    this.store.dispatch(loadEmployee())
+    this.store.select(getEmpList).subscribe(item => {
       this.empList = item;
       this.dataSource = new MatTableDataSource(this.empList);
     })
-    this.subscription.add(sub);
   }
 
   addemployee() {
