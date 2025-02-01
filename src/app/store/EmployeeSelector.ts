@@ -9,3 +9,7 @@ const getEmployeeState = createFeatureSelector<EmployeeModel>('emp') // Mengambi
 export const getEmpList = createSelector(getEmployeeState, (state) => {
     return state.list;
 })
+
+export const selectEmployee = createSelector(getEmployeeState, (state) => {
+    return state.empobj;
+})
