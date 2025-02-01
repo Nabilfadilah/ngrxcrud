@@ -5,11 +5,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddEmployeeComponent } from '../add-employee/add-employee.component';
 import { Employee } from '../../model/Employee';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { EmployeeService } from '../../service/employee.service';
+// import { EmployeeService } from '../../service/employee.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { loadEmployee } from '../../store/EmployeeAction';
+import { deleteEmployee, loadEmployee } from '../../store/EmployeeAction';
 import { getEmpList } from '../../store/EmployeeSelector';
 
 @Component({
@@ -34,7 +34,7 @@ export class EmployeeComponent implements OnInit {
 
   // }
 
-  constructor(private dialog: MatDialog, private service: EmployeeService,
+  constructor(private dialog: MatDialog,
     private store: Store
   ) {
 
@@ -70,10 +70,13 @@ export class EmployeeComponent implements OnInit {
   // method delete 
   DeleteEmployee(empId: number) {
     if (confirm('Are you sure?')) {
-      let sub = this.service.Delete(empId).subscribe(item => {
-        this.GetallEmployee();
-      })
-      this.subscription.add(sub);
+      // let sub = this.service.Delete(empId).subscribe(item => {
+      //   this.GetallEmployee();
+      // })
+      // this.subscription.add(sub);
+
+      // rubah jadi format reducer
+      this.store.dispatch(deleteEmployee({ empId: empId }));
     }
   }
 
