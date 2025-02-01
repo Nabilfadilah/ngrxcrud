@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { EmployeeService } from "../service/employee.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { deleteEmployee, deleteEmployeeSuc, emptyAction, loadEmployee, loadEmployeeFail, loadEmployeeSuc } from "./EmployeeAction";
+import { addEmployee, addEmployeeSuc, deleteEmployee, deleteEmployeeSuc, emptyAction, loadEmployee, loadEmployeeFail, loadEmployeeSuc, updateEmployee, updateEmployeeSuc } from "./EmployeeAction";
 import { catchError, exhaustMap, map, of, switchMap } from "rxjs";
 import { ToastrService } from "ngx-toastr";
 
@@ -38,6 +38,40 @@ export class empEffect {
                             this.showAlert('Deleted Successfully.', 'pass')
                         )
                     }), // Jika berhasil, kirim aksi `deleteEmployeeSuc`
+                    catchError((err) => of(this.showAlert(err.message, 'fail'))) // Jika gagal, tampilkan alert
+                )
+            })
+        )
+    )
+
+    // add 
+    _addEmployee = createEffect(() =>
+        this.actions$.pipe(
+            ofType(addEmployee), // Menunggu aksi `addEmployee`
+            switchMap((action) => {
+                return this.service.Create(action.data).pipe( // Menambah data keryawan
+                    switchMap((data) => {
+                        return of(addEmployeeSuc({ data: action.data }), // Mengirim aksi `addEmployeeSec` dengan `data`
+                            this.showAlert('Created Successfully.', 'pass')
+                        )
+                    }), // Jika berhasil, kirim aksi `addEmployeeSuc`
+                    catchError((err) => of(this.showAlert(err.message, 'fail'))) // Jika gagal, tampilkan alert
+                )
+            })
+        )
+    )
+
+    // update
+    _updateEmployee = createEffect(() =>
+        this.actions$.pipe(
+            ofType(updateEmployee), // Menunggu aksi `updateEmployee`
+            switchMap((action) => {
+                return this.service.Update(action.data).pipe( // Menambah data keryawan
+                    switchMap((data) => {
+                        return of(updateEmployeeSuc({ data: action.data }), // Mengirim aksi `updateEmployeeSuc` dengan `data`
+                            this.showAlert('Updated Successfully.', 'pass')
+                        )
+                    }), // Jika berhasil, kirim aksi `updateEmployeeSuc`
                     catchError((err) => of(this.showAlert(err.message, 'fail'))) // Jika gagal, tampilkan alert
                 )
             })
