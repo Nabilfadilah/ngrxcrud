@@ -12,6 +12,9 @@ import { Employee } from '../../model/Employee';
 import { EmployeeService } from '../../service/employee.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { Store } from '@ngrx/store';
+import { addEmployee, getEmployee, updateEmployee } from '../../store/EmployeeAction';
+import { selectEmployee } from '../../store/EmployeeSelector';
 
 @Component({
   selector: 'app-add-employee',
@@ -34,8 +37,15 @@ export class AddEmployeeComponent implements OnInit {
   dialogData: any // Menyimpan data yang diterima dari dialog
   isEdit = false // Menandakan apakah dalam mode edit atau tidak
 
+  // constructor(
+  //   private service: EmployeeService, // Service untuk komunikasi dengan backend
+  //   private ref: MatDialogRef<AddEmployeeComponent>,
+  //   private toastr: ToastrService, // Data yang diterima dari popup dialog
+  //   @Inject(MAT_DIALOG_DATA) public data: any // Toastr untuk menampilkan notifikasi sukses/gagal
+  // ) { }
+
   constructor(
-    private service: EmployeeService, // Service untuk komunikasi dengan backend
+    private store: Store, // Service untuk komunikasi dengan backend
     private ref: MatDialogRef<AddEmployeeComponent>,
     private toastr: ToastrService, // Data yang diterima dari popup dialog
     @Inject(MAT_DIALOG_DATA) public data: any // Toastr untuk menampilkan notifikasi sukses/gagal
@@ -49,8 +59,8 @@ export class AddEmployeeComponent implements OnInit {
       this.title = 'Edit Employee' // Ubah judul menjadi "Edit Employee"
       this.isEdit = true // Set mode edit menjadi true
 
-      // Ambil data karyawan dari server berdasarkan ID
-      this.service.Get(this.dialogData.code).subscribe(item => {
+      this.store.dispatch(getEmployee({ empId: this.dialogData.code }));
+      this.store.select(selectEmployee).subscribe(item => {
         let _data = item;
         if (_data != null) {
           // Jika data ditemukan, isi form dengan data tersebut
@@ -63,6 +73,21 @@ export class AddEmployeeComponent implements OnInit {
           })
         }
       })
+
+      // Ambil data karyawan dari server berdasarkan ID
+      // this.service.Get(this.dialogData.code).subscribe(item => {
+      //   let _data = item;
+      //   if (_data != null) {
+      //     // Jika data ditemukan, isi form dengan data tersebut
+      //     this.empForm.setValue({
+      //       id: _data.id,
+      //       name: _data.name,
+      //       doj: _data.doj,
+      //       role: _data.role,
+      //       salary: _data.salary
+      //     })
+      //   }
+      // })
     }
   }
 
@@ -86,20 +111,25 @@ export class AddEmployeeComponent implements OnInit {
         salary: this.empForm.value.salary as number
       }
 
-      if (this.isEdit) {
+      if (!this.isEdit) {
         // Jika mode edit, panggil service update data karyawan
-        this.service.Update(_data).subscribe(item => {
-          this.toastr.success('Saved successfully', 'Updated') // Notifikasi sukses
-          this.closePopup(); // Tutup dialog popup setelah update berhasil
-        });
+        // this.service.Update(_data).subscribe(item => {
+        //   this.toastr.success('Saved successfully', 'Updated') // Notifikasi sukses
+        //   this.closePopup(); // Tutup dialog popup setelah update berhasil
+        // });
+
+        this.store.dispatch(addEmployee({ data: _data }))
       } else {
         // Jika mode tambah, panggil service buat data karyawan baru
-        this.service.Create(_data).subscribe(item => {
-          // alert('saved NGAB...');
-          this.toastr.success('Saved successfully', 'Created')  // Notifikasi sukses
-          this.closePopup(); // Tutup dialog popup setelah tambah berhasil
-        });
+        // this.service.Create(_data).subscribe(item => {
+        //   // alert('saved NGAB...');
+        //   this.toastr.success('Saved successfully', 'Created')  // Notifikasi sukses
+        //   this.closePopup(); // Tutup dialog popup setelah tambah berhasil
+        // });
+
+        this.store.dispatch(updateEmployee({ data: _data }))
       }
+      this.closePopup();
     }
   }
 
